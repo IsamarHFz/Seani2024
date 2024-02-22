@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Module(models.Model):
@@ -8,6 +9,10 @@ class Module(models.Model):
     description = models.CharField(
         verbose_name = 'Descripción del Módulo',
         max_length = 100)
+    
+    def num_questions(self):
+        return self.question_set.count()
+    num_questions.short_description = 'Número de preguntas'
     
     def _str_(self):
         return self.name
@@ -22,10 +27,16 @@ class Question(models.Model):
         null = True, blank = True,
         verbose_name = "Texto de la Pregunta",
         max_length = 255)
-    image_text = models.ImageField(
-        null = True, blank = True,
-        verbose_name = "Imagen de la Pregunta",
-        upload_to='questions')
+    # image_text = models.ImageField(
+    #     null = True, blank = True,
+    #     verbose_name = "Imagen de la Pregunta",
+    #     upload_to='questions')
+    question_image = CloudinaryField(
+        null = True,
+        verbose_name = 'Imagen de la pregunta',
+        resource_type = 'image',
+        folder = 'questions'
+    )
     answer1 = models.CharField(
         verbose_name = "Respuesta A",
         max_length = 150)
